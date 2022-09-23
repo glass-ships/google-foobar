@@ -1,208 +1,112 @@
-from typing import List
-from math import gcd
-from fractions import Fraction
-
-"""
-example matrix:
-[
-    [0, 1, 0, 0, 0, 1],
-    [4, 0, 0, 3, 2, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0]
-]
-"""
-
-def transform_matrix(m: List[List]):
-    """
-    example matrix becomes
-    [
-        [0, 1/2, 0, 0, 0, 1/2],
-        [4/9, 0, 0, 1/3, 2/9, 0],
-        [0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 1]
-    ]
-    """
-    l = len(m)
-    for i in range(l):
-        row_sum = sum(m[i])
-        if row_sum == 0:
-            m[i][i] = 1
-        else:
-            for j in range(l):
-                m[i][j] = Fraction(m[i][j], row_sum)
-
-def get_submatrix(matrix: List[List], rows: List, cols: List) -> List[List]:
-    new_matrix = []
-    for row in rows:
-        current_row = []
-        for col in cols:
-            current_row.append(matrix[row][col])
-        new_matrix.append(current_row)
-    return new_matrix
-
-def get_q_matrix(matrix: List[List], transient_states: List) -> List[List]:
-    """
-    For example matrix
-    q_matrix = [
-        [0, 1/2],
-        [4/9, 0]
-    ]
-    """
-    return get_submatrix(matrix, transient_states, transient_states)
-
-def get_r_matrix(matrix: List[List], transient_states: List, absorbing_states: List) -> List[List]:
-    """
-    For example matrix
-    r_matrix = [
-        [0, 0, 0, 1/2],
-        [0, 1/3, 2/9, 0]
-    ]
-    """
-    return get_submatrix(matrix, transient_states, absorbing_states)
-
-def make_2d_list(n: int, m: int) -> List[List]:
-    a = []
-    for row in range(n):
-        a += [[0]*m]
-    return a
-
-def make_identity(n: int) -> List[List]:
-    """
-    for n=3, it returns
-    [
-        [1, 0, 0],
-        [0, 1, 0],
-        [0, 0, 1]
-    ]
-    """
-    matrix = make_2d_list(n, n)
-    for i in range(n):
-        matrix[i][i] = 1
-    return matrix
-
-def subtract_matrices(a: List[List], b: List[List]) -> List[List]:
-    new_matrix = []
-    n, m = len(a), len(b)
-    for i in range(n):
-        row = []
-        for j in range(m):
-            row.append(a[i][j] - b[i][j])
-        new_matrix.append(row)
-    return new_matrix
-
-def multiply_matrices(a: List[List], b: List[List]) -> List[List]:
-    """
-    Multiply two matrices a and b
-    matrix a of size A X B and matrix b of size B X C
-    would yield a matrix c of size A X C
-    """
-    ar, ac, bc = len(a), len(a[0]), len(b[0])
-    c = make_2d_list(ar, bc)
-    for i in range(ar):
-        for j in range(bc):
-            prod = Fraction(0, 1)
-            for k in range(ac):
-                prod += a[i][k] * b[k][j]
-            c[i][j] = prod
-    return c
-
-def multiply_row_of_square_matrix(matrix: List[List], row: int, k: int) -> List[List]:
-    n = len(matrix)
-    identity = make_identity(n)
-    identity[row][row] = k
-    return multiply_matrices(identity, matrix)
-
-def add_multiple_of_row_of_square_matrix(matrix: List[List], source_row: int, k: int, target_row: int):
-    """
-    add k * source_row to target_row of matrix m
-    """
-    n = len(matrix)
-    row_operator = make_identity(n)
-    row_operator[target_row][source_row] = k
-    return multiply_matrices(row_operator, matrix)
-
-def invert_matrix(matrix: List[List]) -> List[List]:
-    n = len(matrix)
-    inverse = make_identity(n)
-    for col in range(n):
-        diagonal_row = col
-        k = Fraction(1, matrix[diagonal_row][col])
-        matrix = multiply_row_of_square_matrix(matrix, diagonal_row, k)
-        inverse = multiply_row_of_square_matrix(inverse, diagonal_row, k)
-        source_row = diagonal_row
-        for target_row in range(n):
-            if source_row != target_row:
-                k = -matrix[target_row][col]
-                matrix = add_multiple_of_row_of_square_matrix(matrix, source_row, k, target_row)
-                inverse = add_multiple_of_row_of_square_matrix(inverse, source_row, k, target_row)
-    return inverse
-
-def lcm(a: int, b: int) -> int:
-    result = a * b // gcd(a, b)
-    return result
-
-def lcm_for_arrays(args: List) -> int:
-    array_length = len(args)
-    if array_length <= 2:
-        return lcm(*args)
-
-    initial = lcm(args[0], args[1])
-    i = 2
-    while i < array_length:
-        initial = lcm(initial, args[i])
-        i += 1
-    return initial
-
 def solution(m):
     """
-    For example matrix
-    transient_states = [0, 1]
-    absorbing_states = [2, 3, 4, 5]
+    For a given matrix, m, which represents an absorbing markov chain, 
+    return a list of probabilities for each terminal state plus the denominator 
+    Markov chain absorption problem:
+    0. Identify absorbing states (0 chance to enter any other state, probability 1 to re-enter current state)
+    1. "minimize" matrix, from total to fraction of total, add 1 for P[i][i] entries in absorbing states
+    2. get matrices R and Q
+    3. get matrix FR
+    4. ????
     """
-    transient_states = []
-    absorbing_states = []
+    import numpy as np
+    from fractions import Fraction
+    
+    m = np.array(m)
+    ### Helper methods ###
+    def _fraction(num, dem):
+        return 0 if num == 0 else Fraction(num, dem)
+
+    def _identity(n):
+        "Return identity matrix of given size"
+        return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+
+    def _get_transition_matrix(m, absorbing_states, transition_states):
+        """
+        Returns almost canonical transform matrix:
+        Q R              I 0
+        0 I  instead of  R Q
+        """
+        # get modified transition matrix
+        M = []
+        for s, probs in enumerate(m):
+            row = []
+            for s_next, p_next in enumerate(probs):
+                row.append(
+                    1 if (s in absorbing_states and s == s_next) else _fraction(p_next, sum(m[s]))
+                    # 1 if (s in absorbing_states and s == s_next) else p_next
+                )
+            M.append(row)
+        
+        # re-arrange into canonical form
+        P = np.array(M)
+        P = P[:, absorbing_states+transition_states]
+        P = P[absorbing_states+transition_states, :]
+        return P
+
+    ### Main solution ###
+    
+    # 0. get (indexes for) absorbing and transient states
+    transition_states = [] # [0, 1]
+    absorbing_states = [] # [2, 3, 4, 5]
     for i in range(len(m)):
         row = m[i]
         if sum(row) == 0:
             absorbing_states.append(i)
+        elif sum(row) == 1 and m[i, i] == 1:
+            absorbing_states.append(i)
         else:
-            transient_states.append(i)
+            transition_states.append(i)
+    
+    # If only 1 absorbing state, return 100% chance to absorb
+    if len(absorbing_states) == 1:
+        return [1, 1]
+    
+    # 1. get (non-canonical) transition matrix
+    P = _get_transition_matrix(m, absorbing_states, transition_states)
 
-    transform_matrix(m)
+    # 2. get matrices R and Q
+    R = P[len(absorbing_states):, :len(absorbing_states)]
+    Q = P[len(absorbing_states):, len(absorbing_states):]
+    
 
-    q = get_q_matrix(m, transient_states)
-    r = get_r_matrix(m, transient_states, absorbing_states)
-    identity = make_identity(len(q))
-    diff = subtract_matrices(identity, q)
-    inverse = invert_matrix(diff)
-    result = multiply_matrices(inverse, r)
-    print('initial result', result)
+    # 3. get matrix FR
+    I = _identity(len(Q))
+    diff = (I-Q).astype(np.float)
+    F = np.linalg.inv(diff)
+    F = [ [Fraction(F[i][j]).limit_denominator() for j in range(len(F[i]))] for i in range(len(F))]
+    FR = np.matmul(F, R)
 
-    denominator = lcm_for_arrays([item.denominator for item in result[0]])
-    result = [item.numerator * denominator // item.denominator for item in result[0]]
-    result.append(denominator)
+    # 4. Express first row of FR in terms of least common denominator
+    probabilities = FR[0]
+    lcm = np.lcm.reduce([p.denominator for p in probabilities])
+    result = [p.numerator * lcm // p.denominator for p in probabilities]
+    result.append(lcm)
+    # print("\nTransition states: {}".format(transition_states))
+    # print("Absorbing states: {}".format(absorbing_states))
+    # print("\nCanonical transition matrix: \n{}\n".format(P))
+    # print("\nMatrix R:\n{}\n".format(R))
+    # print("\nMatrix Q:\n{}\n".format(Q))
+    # print("\nProbability matrix: {}\n".format(probabilities))
+    # print("Result:\n{}".format(result))
     return result
 
-
-# Test cases
+# Testing
 test_cases = [
-#   [7, 6, 8, 21]
     [[0, 2, 1, 0, 0],
     [0, 0, 0, 3, 4],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0,0],
-    [0, 0, 0, 0, 0]],
-
-#   [0, 3, 2, 9, 14] -->
+    [0, 0, 0, 0, 0]], # -> [7, 6, 8, 21]
+    
     [[0, 1, 0, 0, 0, 1],
     [4, 0, 0, 3, 2, 0],
     [0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0]]
+    [0, 0, 0, 0, 0, 0]] # -> [0, 3, 2, 9, 14]
 ]
 
+for m in test_cases:
+    result = solution(m)
+    print(result)
