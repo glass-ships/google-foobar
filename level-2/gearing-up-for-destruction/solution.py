@@ -14,7 +14,6 @@ def solution(pegs):
     # r_n = pegs[n] - pegs[0] - 2*alternating_sum(pegs[1:]) if odd
     # r_n = [pegs[n] - pegs[0] - 2*alternating_sum(pegs[1:])]/3 if even
 
-
     # define an alternating sum for later
     def altsum(l):
         sum = 0
@@ -27,7 +26,6 @@ def solution(pegs):
     if (beamlength <= 1):
         return [-1,-1]
 
-# My method, fails half the tests (even cases specifically)
     # check parity and set coefficient, calculate a candidate first gear radius
     isEven = True if (beamlength % 2 == 0) else False
     right_side = pegs[-1] - pegs[0] 
@@ -35,17 +33,6 @@ def solution(pegs):
     r_n = float(right_side)/3 if isEven else right_side
     r_0 = Fraction(2*r_n).limit_denominator()
     
-# Googled answer, works for all test cases
-    # innerSum = ( -pegs[0] + pegs[-1] ) if isEven else ( -pegs[0] - pegs[-1] )
-    # if (beamlength > 2):
-    #     for index in range(1, beamlength-1):
-    #         innerSum += 2 * (-1)**(index+1) * pegs[index]
-    # r_n = float(innerSum)/3 if isEven else innerSum
-    # r_0 = Fraction(2*r_n).limit_denominator()
-   
-    # verify that the result is valid by asserting that each gear has radius >= 1
-    # using fact that (distance btwn pegs) = sum(radii of gears on those pegs)
-    # d = pegs[i+1] - pegs[i] = r[i] + r[i+1] -> r[i+1] = d - r[i]
     if r_0 < 2:
         return [-1,-1]
 

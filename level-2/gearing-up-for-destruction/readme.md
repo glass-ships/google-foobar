@@ -1,3 +1,5 @@
+# Gearing Up For Destruction
+
 As Commander Lambda’s personal assistant, you’ve been assigned the task of configuring the LAMBCHOP doomsday device’s axial orientation gears. It should be pretty simple — just add gears to create the appropriate rotation ratio. But the problem is, due to the layout of the LAMBCHOP and the complicated system of beams and pipes supporting it, the pegs that will support the gears are fixed in place.
 
 The LAMBCHOP’s engineers have given you lists identifying the placement of groups of pegs along various support beams. You need to place a gear on each peg (otherwise the gears will collide with unoccupied pegs).
