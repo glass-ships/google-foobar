@@ -1,19 +1,6 @@
 def solution(pegs):
     from fractions import Fraction
 
-    ### helpful relationships
-    # 
-    # distance btwn pegs = sum(radii of gears on those pegs)
-    # d = pegs[i+1] - pegs[i] = r[i] + r[i+1] -> r[i+1] = d - r[i]
-    # r_0 = 2*r_n (problem constraint)
-    #
-    # pegs[n] - pegs[0] = r_0 + r_n + 2*sum(r_pegs[1:-1]) 
-    #                   = r_n + 2*r_n + 2*sum(r_pegs[1:-1]) 
-    #                   = r_n + 2*sum(r_pegs[1:]) if odd
-    #                   = 3*r_n + 2*sum(r_pegs[1:]) if even
-    # r_n = pegs[n] - pegs[0] - 2*alternating_sum(pegs[1:]) if odd
-    # r_n = [pegs[n] - pegs[0] - 2*alternating_sum(pegs[1:])]/3 if even
-
     # define an alternating sum for later
     def altsum(l):
         sum = 0

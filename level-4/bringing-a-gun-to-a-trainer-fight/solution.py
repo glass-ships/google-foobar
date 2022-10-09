@@ -2,34 +2,8 @@ from math import sqrt, atan2
 
 def solution(dimensions, your_position, trainer_position, distance):
     """
-    Yay, optics problem! Easier to solve on paper, will be a nice challenge to implement into code.
-
-    Snell's Law of Reflection: incoming angle = outgoing angle (assume perfect reflection)
-    This means rather than reflecting the beam, we can easily reflect the room and measure the straight paths. 
-    Beam has limited range, so limited reflections are required. 
-    So the reframed problem becomes: 
-        
-    How many direct paths to reflected trainers are there within the range limit of the beam (provided we're not hit along the way!)
-
-    The process should look something like: 
-        - Create a Room in first quadrant of x, y plane and place self and trainer 
-        - Use beam range to determine how many reflections are needed in x and y
-        - Create a mapping to these reflection spaces in first quadrant
-        - Reflect these reflection spaces into quadrants 2-4 to allow for full range of orientations
-        - Calculate and test all possible beam orientations
-        - If trainer is hit, add to a total hits counter. 
-          If self is hit, that's probably not very good, so we ignore that. 
-
-
-    For number of reflections: 
-        At most, we'll need a new room (reflections included) with x dimension >= (max beam length + glass's x position),
-        and with y dimenion >= (max beam length + glass's y position).
-        So, we can re-arrange this relationship a little: 
-    
-            (glass_x + max beam length) <= x_dimension * number of reflections   becomes:
-
-            [number of reflections in x, y] = [int(ceil(glass_pos + beam_range, dimensions))]
-        
+    For a room with given dimensions, coordinates for self and trainer, and a max beam range,
+    return the number of unique shot trajectories which will hit the trainer but not self.
     """
    
     # Rename some variables for no other reason than to help me keep track 

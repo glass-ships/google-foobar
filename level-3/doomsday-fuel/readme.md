@@ -1,5 +1,7 @@
 # Doomsday Fuel
 
+## Problem
+
 Making fuel for the LAMBCHOP's reactor core is a tricky process because of the exotic matter involved. It starts as raw ore, then during processing, begins randomly changing between forms, eventually reaching a stable form. There may be multiple stable forms that a sample could ultimately reach, not all of which are useful as fuel. 
 
 Commander Lambda has tasked you to help the scientists increase fuel creation efficiency by predicting the end state of a given ore sample. You have carefully studied the different structures that the ore can take and which transitions it undergoes. It appears that, while random, the probability of each structure transforming is fixed. That is, each time the ore is in 1 state, it has the same probabilities of entering the next state (which might be the same state).  You have recorded the observed transitions in a matrix. The others in the lab have hypothesized more exotic forms that the ore can become, but you haven't seen all of them.
@@ -34,3 +36,17 @@ So, putting that together, and making a common denominator, gives an answer in t
 `[s2.numerator, s3.numerator, s4.numerator, s5.numerator, denominator]` which is
 `[0, 3, 2, 9, 14]`.
 
+## Approach 
+
+- see [solution.py](solution.py) for the Python implementation
+
+This problem can be represented as an absorbing Markov chain.  
+The input is essentially a modified transition matrix.  
+
+The process should look something like:  
+0. Identify absorbing states (0 chance to enter any other state, probability 1 to re-enter current state)
+1. Divide each element in a row by the sum of the row, and re-express the matrix in terms of probability rather than number of interactions
+2. Re-arrange into more traditional form of transition matrix
+3. Get matrices R and Q
+4. Get matrix FR
+5. Reduce by least common denominator and return list of numerators then denom

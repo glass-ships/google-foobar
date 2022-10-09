@@ -20,6 +20,7 @@ test_cases = [
     "wrw blf hvv ozhg mrtsg'h vkrhlwv?",
     "Yvzs! I xzm'g yvorvev Lzmxv olhg srh qly zg gsv xlolmb!!",
 ]
-for i in test_cases:
-    print("\nEncrypted message: %s" % i)
-    print("Decrypted message: %s" % solution(i))
+if __name__ == "__main__":
+    for i in test_cases:
+        print("\nEncrypted message: %s" % i)
+        print("Decrypted message: %s" % solution(i))

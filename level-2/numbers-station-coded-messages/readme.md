@@ -1,5 +1,7 @@
 # Numbers Station Coded Messages
 
+## Problem 
+
 When you went undercover in Commander Lambda's organization, you set up a coded messaging system with Bunny Headquarters to allow them to send you important mission updates. Now that you're here and promoted to Henchman, you need to make sure you can receive those messages - but since you need to sneak them past Commander Lambda's spies, it won't be easy!
 
 Bunny HQ has secretly taken control of two of the galaxy's more obscure numbers stations, and will use them to broadcast lists of numbers. They've given you a numerical key, and their messages will be encrypted within the first sequence of numbers that adds up to that key within any given list of numbers.
@@ -16,3 +18,17 @@ To help you identify the coded broadcasts, Bunny HQ has agreed to the following 
 
 For the list returned by solution(l, t), the start index must be equal or smaller than the end index.
 Remember, to throw off Lambda's spies, Bunny HQ might include more than one contiguous sublist of a number broadcast that can be summed up to the key. You know that the message will always be hidden in the first sublist that sums up to the key, so solution(l, t) should only return that sublist.
+
+## Approach
+
+- see [solution.py](solution.py) for the Python implementation
+
+At first I tried to implement a recursive solution, but I couldn't think of a way to keep track of the number of loops without adding an argument,  
+and I wasn't sure if this was in the constraints of the problem or not. Ultimately I opted for an iterative approach in the interest of time.  
+
+I also showed the problem to a friend for fun, and I kept his solution here to show some of the variety in approaching these problems. 
+
+The final solution I ended up implementing was an approach I came across when searching for how to check if a sum exists within subsets of a list.  
+The basic gist is starting at index 0, adding each element in the list to see if the sum is found.  
+If the sum is *greater* than the target value, then we subtract the 0th value, and keep summing starting at the next index.  
+This has the benefit of avoiding repeated computations that are present in FatCatNine's solution.

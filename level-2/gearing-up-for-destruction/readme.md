@@ -1,5 +1,7 @@
 # Gearing Up For Destruction
 
+## Problem 
+
 As Commander Lambda’s personal assistant, you’ve been assigned the task of configuring the LAMBCHOP doomsday device’s axial orientation gears. It should be pretty simple — just add gears to create the appropriate rotation ratio. But the problem is, due to the layout of the LAMBCHOP and the complicated system of beams and pipes supporting it, the pegs that will support the gears are fixed in place.
 
 The LAMBCHOP’s engineers have given you lists identifying the placement of groups of pegs along various support beams. You need to place a gear on each peg (otherwise the gears will collide with unoccupied pegs).
@@ -12,3 +14,41 @@ Not all support configurations will necessarily be capable of creating the prope
 For example, if the pegs are placed at [4, 30, 50], then the first gear could have a radius of 12, the second gear could have a radius of 14, and the last one a radius of 6. Thus, the last gear would rotate twice as fast as the first one. In this case, pegs would be [4, 30, 50] and solution(pegs) should return [12, 1].
 
 The list pegs will be given sorted in ascending order and will contain at least 2 and no more than 20 distinct positive integers, all between 1 and 10000 inclusive.
+
+## Approach
+
+- see [solution.py](solution.py) for the Python implementation
+
+The key to this one is in the geometry of the problem, and in the constraint.  
+
+We can determine all gear radii usinng two facts:  
+- The distance between two pegs = the sum of the radii of gears on those pegs
+- The last gear must be half the radius of the first gear  
+
+In pseudo-code:  
+```python
+### For a beam with n pegs for gears with some radius r
+
+# constraint
+r_0 = 2*r_n
+
+# distance_btwn_pegs = sum(radii_of_gears_on_those_pegs)
+d = pegs[i+1] - pegs[i] = r[i] + r[i+1] 
+r[i+1] = d - r[i]
+
+# For the whole beam
+pegs[n] - pegs[0] = r_0 + r_n + 2*sum(r_pegs[1:-1]) 
+                  = r_n + 2*r_n + 2*sum(r_pegs[1:-1]) 
+                  = r_n + 2*sum(r_pegs[1:]) if odd
+                  = 3*r_n + 2*sum(r_pegs[1:]) if even
+
+# This gives as a way of finding our last, and therefore first gear radii
+r_n = pegs[n] - pegs[0] - 2*alternating_sum(pegs[1:]) if odd
+r_n = [pegs[n] - pegs[0] - 2*alternating_sum(pegs[1:])]/3 if even
+```
+
+From there, we can fill in the middle gears iteratively, since r_1 + r_0 necessarily equals the distance between pegs 1 and 0, and we know 2 of the 3 things.
+
+Here's a snippet of the math that got me to the solution:
+
+<img src=img.png alt="Some math related to the gear problem" width=720>

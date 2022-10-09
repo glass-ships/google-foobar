@@ -1,5 +1,32 @@
-def solution_recursive(l, t):
+def solution(l,t):
 
+    if t in l:
+        return [l.index(t), l.index(t)]
+    sum=0
+    start=0
+    # start summing up list elements
+    for ind, val in enumerate(l):
+    
+        sum += val
+                
+        # check we didn't overshoot our target
+        while (sum > t and start < ind):
+            sum -= l[start]
+            start += 1
+        
+        # if target found, return start and stop indices
+        if sum == t:
+            return [start,ind]
+        # otherwise, sublist sum continues starting at next index
+
+    # if target not found, return -1,-1
+    return [-1,-1]
+
+
+def solution_recursive(l, t):
+    """
+    Couldn't get it working in time
+    """
     # Assert Bunny HQ standards
     assertions = {
     "List size": (len(l) <= 100) and (len(l) > 1),
@@ -47,7 +74,12 @@ Please check your inputs and try again.
     else:
         solution_recursive(l[1:], t)   
 
-def solution_daniel(l,t):
+def solution_fatcatnine(l,t):
+    """
+    I showed the problem to a friend for fun, 
+    this was the solution he came up with which I kept here 
+    to show a little of the variety you can take in approaching these problems
+    """
     a = b = 0
     max = len(l)
     while a < max:
@@ -65,38 +97,6 @@ def solution_daniel(l,t):
                 return [-1,-1]
     return [-1,-1]
 
-def solution(l,t):
-    
-    # Assert Bunny HQ standards
-    # assertions = {
-    # "List size": (len(l) <= 100) and (len(l) >= 1),
-    # "Element size": (any(i < 100 for i in l) and any(i >= 1 for i in l)),
-    # "Target size": (t >= 1 and t <= 250),
-    # "Int input only": (all(type(i) == int for i in l))
-    # }
-    # if any(assertions[i] == False for i in assertions):
-    #     return [-2,-2]
-    if t in l:
-        return [l.index(t), l.index(t)]
-    sum=0
-    start=0
-    # start summing up list elements
-    for ind, val in enumerate(l):
-    
-        sum += val
-                
-        # check we didn't overshoot our target
-        while (sum > t and start < ind):
-            sum -= l[start]
-            start += 1
-        
-        # if target found, return start and stop indices
-        if sum == t:
-            return [start,ind]
-        # otherwise, sublist sum continues starting at next index
-
-    # if target not found, return -1,-1
-    return [-1,-1]
 
 test_cases = [
     ([4, 3, 10, 2, 8], 10),
@@ -105,6 +105,7 @@ test_cases = [
     ([1, 2, 4, 4], 6),
 ]
 
-for l, t in test_cases:
-    print(solution(l, t))
+if __name__ == "__main__":
+    for l, t in test_cases:
+        print(solution(l, t))
 

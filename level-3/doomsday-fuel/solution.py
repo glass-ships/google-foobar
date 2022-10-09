@@ -2,12 +2,6 @@ def solution(m):
     """
     For a given matrix, m, which represents an absorbing markov chain, 
     return a list of probabilities for each terminal state plus the denominator 
-    Markov chain absorption problem:
-    0. Identify absorbing states (0 chance to enter any other state, probability 1 to re-enter current state)
-    1. "minimize" matrix, from total to fraction of total, add 1 for P[i][i] entries in absorbing states
-    2. get matrices R and Q
-    3. get matrix FR
-    4. ????
     """
     import numpy as np
     from fractions import Fraction
@@ -82,13 +76,7 @@ def solution(m):
     lcm = np.lcm.reduce([p.denominator for p in probabilities])
     result = [p.numerator * lcm // p.denominator for p in probabilities]
     result.append(lcm)
-    # print("\nTransition states: {}".format(transition_states))
-    # print("Absorbing states: {}".format(absorbing_states))
-    # print("\nCanonical transition matrix: \n{}\n".format(P))
-    # print("\nMatrix R:\n{}\n".format(R))
-    # print("\nMatrix Q:\n{}\n".format(Q))
-    # print("\nProbability matrix: {}\n".format(probabilities))
-    # print("Result:\n{}".format(result))
+
     return result
 
 # Testing
