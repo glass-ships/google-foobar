@@ -59,8 +59,35 @@ solution(2, 2, 2) = 7
 
 - see [solution.py](solution.py) for the Python implementation
 
-I don't know why I wasn't expecting to see group theory come up in this series of challenges, but here we are.  
-This problem essentially asks us to find the number of orbitals of a given system, or in other words,  
-how many equivalent matrix classes are there, given all the possible configurations? 
+There's a lot to unpack here so let's start by reducing the problem to one question:  
+> *For a matrix of size `h*w`, and `s` possible states for each matrix element,  
+how many distinct groupings of permutations are there,  
+such that matrices are considered equivalent (symmetric) on row/column swaps?*
 
-This can be solved using either Polya Enumeration or Burnside's Lemma.  
+One side-effect of row/column swaps is that after any number of swaps, the elements within each row and column are the same (ignoring order).  
+So a brute force approach might involve iterating through all possible permutations of a matrix,  
+and counting only matrices which can't be row/column shifted to obtain another matrix in the set of solutions.  
+
+This could probably work for small matrices and a small number of states, but for the maximum case, of 20 states in a 12 x 12 matrix,  
+we find there are 12*12 choose 20 possible permutations - about 1.5 x 10**24 
+
+So we'll need a more mathematically elegant approach. The wording of the problem suggests that "group theory" and "equivalent matrices" might be good search terms.  
+Sure enough, some cursory research brings a few theories to light, namely Burnside's Lemma, Polya Enumeration, and the Cycle Index polynomial.
+
+The Cycle Index polynomial gives a way to enumerate equivalence classes due to a group's action, and is at the heart of both Burnside's Lemma and Polya Enumeration Theorem, so we'll implement this.  
+In particular, we'll use the Cycle Index polynomial for the Symmetric Group $S_n$:  
+$$Z(S_n) = \sum_{j\in J_n}^{}(\frac{1}{\prod_{k=0}^{n}(k^{j_k}\cdot j_k)}a_{1}^{j_1}a_{2}^{j_2}...a_{p}^{j_p})$$
+
+where $n$ is the size of set.  
+We can get the cycle index the columns and rows separately, then combine them for an overall cycle index.  
+For each term in the row and column cycle index, the combined contribution can be expressed as:  
+$$C(a_{p}^{q}, b_{x}^{y}) = a_{lcm(p,x)}^{p\cdot q\cdot x\cdot y\cdot / lcm(p,x)}$$
+
+**Disclaimer**  
+I am by no means an expert on group theory, and unfortunately don't understand the theory behind the math here nearly as well as I'd like to.  
+Here are some helpful links to reading which helped me to understand how to approach this problem programmatically:
+- https://brilliant.org/wiki/burnsides-lemma/
+- https://en.wikipedia.org/wiki/Cycle_index
+- https://math.stackexchange.com/questions/2056708/number-of-equivalence-classes-of-w-times-h-matrices-under-switching-rows-and
+- https://math.mit.edu/~apost/courses/18.204_2018/Jenny_Jin_paper.pdf
+

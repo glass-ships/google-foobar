@@ -38,3 +38,25 @@ I'm also not an expert by any stretch, so there is likely much room for improvem
 ### Level 5
 
 - [Disorderly Escape](level-5/disorderly-escape/)
+
+### Post Game
+
+After you complete all 5 levels, you'll get an encrypted message to decode! 
+I am by no means an expert on decryption, so I turned to the internet for some help.  
+I recommend trying to solve it yourself, but if you're like me and wouldn't know where to start, here's how to approach it.
+
+<details>
+  <summary>SPOILERS - decrypting the message</summary>
+
+    First, this should be pretty recognizable as base64, so we `b64decrypt` the initial message to start.  
+
+    This gives us a pretty unrecognizable byte string that we'll need to convert into actual characters.  
+    It turns out the coloration on "for YOUR eyes only" is a hint. 
+    
+    So next, we'll need to decode the byte string using our _username_! 
+
+    The specific way we obtain the target string is where I got stuck:  
+    you basically need to iterate through the characters in your username as ASCII characters,  
+    cast them as an int using `ord()`, then XOR the result with the corresponding character in the encoded byte string.
+  
+</details>
